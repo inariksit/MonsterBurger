@@ -30,7 +30,7 @@ the restaurant confirms that the customer finishes
 ## Time expressions
 
 
-Two variants in the linearisation: 
+### Two variants in the linearisation: 
 
 `Transition (Within 999) (Pred Customer Finish)`  
 * the customer finishes within 999 minutes
@@ -43,3 +43,8 @@ Two variants in the linearisation:
 `Transition (Upon Ant (Pred Customer (Order Burger))) (Pred Restaurant Finish)`  
 * upon the customer having ordered the burger , the restaurant finishes
 * the restaurant finishes upon the customer having ordered the burger
+
+Maybe `EndOfChallenge` can also be an `Event`? (NB: this linearisation is just an ugly quick hack, probably the lincat of `Event` should be changed to accommodate different types of events).
+
+`Transition (Upon Sim EndOfChallenge) (Pred Customer (Order Burger))`  
+upon ing the end of challenge , the customer orders the burger

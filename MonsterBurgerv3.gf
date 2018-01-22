@@ -1,6 +1,6 @@
 abstract MonsterBurgerv3 = {
 
-flags startcat = Event ; --Statement ;
+flags startcat = Statement ;
 
   cat
     Statement ;
@@ -53,6 +53,7 @@ flags startcat = Event ; --Statement ;
     Upon : Temporal -> Event -> TimeExpression ;
     Within : Int -> TimeExpression ;
 
+
     Transition : TimeExpression -> Event -> Statement ;
 
     --If : Event -> ??? ;
@@ -63,7 +64,7 @@ flags startcat = Event ; --Statement ;
 -- Events
 
 	Pred : Party -> Action -> Event ;
---	EndOfChallenge : ???
+	EndOfChallenge : Event ;
 
 
 

@@ -3,7 +3,7 @@ concrete MonsterBurgerv3Eng of MonsterBurgerv3 =
 
 
   lincat
---    Statement = S ;
+    Statement = SS ;
     Event = Ev ; -- Control flow functions take Events as arguments, so we need to keep tense open:
                  -- e.g. "when ordering", "upon having checked"
     Party = NP ;
@@ -59,21 +59,27 @@ concrete MonsterBurgerv3Eng of MonsterBurgerv3 =
           customer_having_finished : NP = mkNP event.subj having_finished ;
       in SyntaxEng.mkAdv (mkPrep "upon") customer_having_finished ;
 
+    
+
     Within n = ParadigmsEng.mkAdv ("within" ++ n.s ++ "minutes") ; 
 
     Transition tim ev =
       let event = mkS (mkCl ev.subj ev.pred)
-       in variants { cc2 event tim         -- the restaurant serves the burger within 5 minutes
-                   ; ExtAdvS tim event } ; -- within 5 minutes, the restaurant serves the burger 
+       in variants { ExtAdvS tim event  -- within 5 minutes, the restaurant serves the burger 
+                   ; cc2 event tim } ;-- the restaurant serves the burger within 5 minutes
 
 
 -- Events, Statements
     Pred p a = { subj = p; pred = a } ;
 
+    -- TODO: remove remnants of verb: "upon ing the end of challenge"
+    EndOfChallenge = { subj = mkNP (mkN []) ; 
+                       pred = vp [] (np "end of challenge")} ; 
 
 ------
 
 oper
+
   np : Str -> NP = \s -> mkNP the_Det (mkN s) ;
   vp : Str -> NP -> VP = \s,obj -> mkVP (mkV2 s) obj ;
 
