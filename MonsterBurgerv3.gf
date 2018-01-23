@@ -6,22 +6,22 @@ flags startcat = Statement ;
     Statement ;
     Event ;
     Party ;
-	Object ;
+    Object ;
     Action ;
     Guarantee ;
-	TimeExpression ;
-	Temporal ;
+    TimeExpression ;
+    Temporal ;
 
   fun
 
 -- Parties, objects, guarantees
-	Restaurant : Party ;
-	Customer : Party ;
+    Restaurant : Party ;
+    Customer : Party ;
 
-	Burger : Object ;
+    Burger : Object ;
 
-	PromptCheck : Guarantee ;
-	PromptServe : Guarantee ;
+    PromptCheck : Guarantee ;
+    PromptServe : Guarantee ;
 
  -- Actions
 
@@ -29,18 +29,18 @@ flags startcat = Statement ;
     Finish : Action ;
 
     -- transitive, with different types of complements
-	Serve   : Object -> Action ;
-	Order   : Object -> Action ;
-	Pay     : Object -> Action ;
-	Violate : Guarantee -> Action ;
+    Serve   : Object -> Action ;
+    Order   : Object -> Action ;
+    Pay     : Object -> Action ;
+    Violate : Guarantee -> Action ;
 
     -- sentential complement
     Confirm    : Event -> Action ; -- linearisation variants: check, confirm 
-	Disconfirm : Event -> Action ;
+    Disconfirm : Event -> Action ;
 
     -- modals -- TODO should there be a different abstract category? 
-	May    : Action -> Action ;
-	Should : Action -> Action ;
+    May    : Action -> Action ;
+    Should : Action -> Action ;
 
 
 -- Time expressions, control flow
@@ -59,13 +59,10 @@ flags startcat = Statement ;
     --If : Event -> ??? ;
 
 
-
-
 -- Events
 
-	Pred : Party -> Action -> Event ;
-	EndOfChallenge : Event ;
-
+    Pred : Party -> Action -> Event ;
+    EndOfChallenge : Event ;
 
 
 }
