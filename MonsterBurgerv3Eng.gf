@@ -15,7 +15,7 @@ concrete MonsterBurgerv3Eng of MonsterBurgerv3 =
 
   linref Event = linEvent ;
 
-  lin 
+  lin
 
 -- Parties, objects, guarantees
 
@@ -39,42 +39,57 @@ concrete MonsterBurgerv3Eng of MonsterBurgerv3 =
     -- modal
     May action = mkVP may_VV action ;
 
-    Confirm ev = 
-        let evCl = mkCl ev.subj ev.pred ;
-        in mkVP (mkVS (mkV "confirm")) (mkS evCl) ;
+    -- "Confirm that the restaurant serves the burger" or
+    -- "Confirm the end of the challenge"
+    Confirm ev =
+      case ev.evtype of {
+        Atom => mkVP (mkV2 "confirm") ev.atom ;
+
+        Sentence =>
+          let evCl = mkCl ev.subj ev.pred ;
+          in mkVP (mkVS (mkV "confirm")) (mkS evCl)
+      };
 
 -- Time expressions
     Sim = TSim ;
     Ant = TAnt ;
 
-    Upon temp event = 
-      let 
-          -- This is a hack -- what we really need to do is to
-          -- generalise GerundAdv in Extend to take temporal parameters!
-          having_finished : Adv = case temp of {
-            TAnt => ParadigmsEng.mkAdv 
-                      (mkS (mkTemp pastTense simultaneousAnt) positivePol 
-                           (mkCl (E.GerundNP (mkVP have_V)) event.pred)).s ; ----hack
+    -- "Upon the customer having finished" or
+    -- "Upon the end of the challenge"
+    Upon temp event =
+      let having_finished : Adv = case temp of {
+            TAnt => E.GerundAdv
+                      (E.ComplGenVV have_VV
+                                    simultaneousAnt
+                                    positivePol
+                                    event.pred) ; -- TODO: incorrect form
             TSim => E.GerundAdv event.pred } ;
-          customer_having_finished : NP = mkNP event.subj having_finished ;
-      in SyntaxEng.mkAdv (mkPrep "upon") customer_having_finished ;
+          event_NP : NP = case event.evtype of {
+            Atom => event.atom ;
+            Sentence => mkNP event.subj having_finished } ;
+      in SyntaxEng.mkAdv (mkPrep "upon") event_NP ;
 
-    
 
-    Within n = ParadigmsEng.mkAdv ("within" ++ n.s ++ "minutes") ; 
+    Within n = ParadigmsEng.mkAdv ("within" ++ n.s ++ "minutes") ;
 
     Transition tim ev =
       let event = mkS (mkCl ev.subj ev.pred)
-       in variants { ExtAdvS tim event  -- within 5 minutes, the restaurant serves the burger 
+       in variants { ExtAdvS tim event  -- within 5 minutes, the restaurant serves the burger
                    ; cc2 event tim } ;-- the restaurant serves the burger within 5 minutes
 
 
 -- Events, Statements
-    Pred p a = { subj = p; pred = a } ;
+    Pred party action = {
+      atom = mkNP (mkN nonExist) ;
+      subj = party ;
+      pred = action ;
+      evtype = Sentence
+      } ;
 
-    -- TODO: remove remnants of verb: "upon ing the end of challenge"
-    EndOfChallenge = { subj = mkNP (mkN []) ; 
-                       pred = vp [] (np "end of challenge")} ; 
+    EndOfChallenge =
+      npEvent "end of challenge"
+              "challenge"
+              "end" ;
 
 ------
 
@@ -83,11 +98,31 @@ oper
   np : Str -> NP = \s -> mkNP the_Det (mkN s) ;
   vp : Str -> NP -> VP = \s,obj -> mkVP (mkV2 s) obj ;
 
-  Ev : Type = { subj : NP ; pred : VP } ;
+  Ev : Type = {
+    atom : NP ;
+    subj : NP ;
+    pred : VP ;
+    evtype : EvType
+    } ;
 
-  linEvent : Ev -> Str = \ev -> (mkS (mkCl ev.subj ev.pred)).s ;
+  linEvent : Ev -> Str = \ev -> case ev.evtype of {
+    Sentence => (mkS (mkCl ev.subj ev.pred)).s ;
+    Atom => (mkUtt ev.atom).s
+    } ;
 
-  param Tempor = TSim | TAnt ;
+  npEvent : (atom,subj,pred : Str) -> Ev = \atom,s,p -> {
+    atom = np atom ;
+    subj = np s ;
+    pred = mkVP (mkV p) ;
+    evtype = Atom
+    } ;
+
+  have_VV : VV = infVV (lin V have_V2) ;
+
+  param
+    Tempor = TSim | TAnt ;
+
+    EvType = Sentence | Atom ;
 }
 
 {-
