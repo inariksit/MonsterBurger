@@ -44,7 +44,7 @@ You can certainly overgenerate, and a lot of the trees don't make semantic sense
 * upon the customer having ordered the burger , the restaurant finishes
 * the restaurant finishes upon the customer having ordered the burger
 
-Maybe `EndOfChallenge` can also be an `Event`? (NB: this linearisation is just an ugly quick hack, "upon ing the end" is obviously wrong. Ultimately should change the lincat of `Event`.)
+`EndOfChallenge` can also be an `Event`.
 
 `Transition (Upon Sim EndOfChallenge) (Pred Customer (Order Burger))`  
-* upon ~~ing~~ the end of challenge , the customer orders the burger
+* upon the end of challenge , the customer orders the burger
